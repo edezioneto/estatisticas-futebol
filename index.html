@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Estatísticas de Futebol</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    input, button { padding: 10px; margin: 5px; }
+    #resultado { margin-top: 20px; background: #fff; padding: 15px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Buscar Time de Futebol</h1>
+  <input id="teamInput" placeholder="Digite o nome do time">
+  <button onclick="buscarTime()">Buscar</button>
+  <div id="resultado"></div>
+
+  <script>
+    async function buscarTime() {
+      const team = document.getElementById('teamInput').value;
+      const resultado = document.getElementById('resultado');
+      resultado.innerHTML = "Buscando...";
+
+      const url = `https://api-football-v1.p.rapidapi.com/v3/teams?search=${team}`;
+
+      const options = {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-key': 'SUA_API_KEY_AQUI',
+          'x-rapidapi-host': 'api-football-v1.p.rapidapi.com'
+        }
+      };
+
+      try {
+        const res = await fetch(url, options);
+        const data = await res.json();
+        if (data.response && data.response.length > 0) {
+          const teamData = data.response[0].team;
+          resultado.innerHTML = `<strong>Time:</strong> ${teamData.name}<br><img src="${teamData.logo}" height="50">`;
+        } else {
+          resultado.innerHTML = "Nenhum time encontrado.";
+        }
+      } catch (err) {
+        resultado.innerHTML = "Erro ao buscar dados.";
+      }
+    }
+  </script>
+</body>
+</html>
